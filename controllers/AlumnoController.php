@@ -20,7 +20,7 @@ class AlumnoController {
 
     public function store($data) {
         $success = $this->alumno->create($data);
-        echo json_encode(['success' => $success]);
+        echo json_encode(['message' => 'Alumno creado Correctamente', 'success' => $success]);
     }
 
     public function update($id, $data) {

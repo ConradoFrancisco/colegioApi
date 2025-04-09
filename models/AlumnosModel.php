@@ -22,27 +22,38 @@ class Alumno {
     }
 
     public function create($data) {
-        $query = "INSERT INTO alumnos (nombre, apellido, dni, fecha_nac, direccion, barrio, socio_educativo, escuela, anio_escolar, turno)
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        return $stmt->execute([
-            $data['nombre'],
-            $data['apellido'],
-            $data['dni'],
-            $data['fecha_nac'],
-            $data['direccion'],
-            $data['barrio'],
-            $data['socio_educativo'],
-            $data['escuela'],
-            $data['anio_escolar'],
-            $data['turno'],
-        ]);
+        try{
+            $query = "INSERT INTO alumnos (nombre, apellido, dni, fecha_nacimiento, direccion, barrio, socio_educativo, escuela, anio_escolar)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+            $data['socio_educativo'] = $data['socio_educativo'] === '0' ? false : true;
+            $stmt->execute([
+                $data['nombre'],
+                $data['apellido'],
+                $data['dni'],
+                $data['fecha_nacimiento'],
+                $data['direccion'],
+                $data['barrio'],
+                $data['socio_educativo'],
+                $data['escuela'],
+                $data['anio_escolar'],
+            ]);
+            return ['success' => true,'message' => 'Alumno creado correctamente'];
+        } catch (Exception $e) {
+            echo json_encode(['error' => 'Error al crear el alumno: ' . $e->getMessage()]);
+            return false;
+        }
+
+       
     }
 
     public function update($id, $data) {
         $query = "UPDATE alumnos SET nombre = ?, apellido = ?, dni = ?, fecha_nac = ?, direccion = ?, barrio = ?, socio_educativo = ?, escuela = ?, anio_escolar = ?, turno = ?
                   WHERE id = ?";
         $stmt = $this->db->prepare($query);
+
+        $data['socio_educativo'] = $data['socio_educativo'] === '0' ? false : true;
+
         return $stmt->execute([
             $data['nombre'],
             $data['apellido'],
@@ -53,7 +64,7 @@ class Alumno {
             $data['socio_educativo'],
             $data['escuela'],
             $data['anio_escolar'],
-            $data['turno'],
+          
             $id
         ]);
     }
