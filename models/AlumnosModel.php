@@ -16,9 +16,53 @@ class Alumno {
     }
 
     public function getById($id) {
-        $stmt = $this->db->prepare("SELECT * FROM alumnos WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        // Obtener datos del alumno
+        $stmtAlumno = $this->db->prepare("SELECT * FROM alumnos WHERE id = ?");
+        $stmtAlumno->execute([$id]);
+        $alumno = $stmtAlumno->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$alumno) {
+            return null;
+        }
+    
+        // Obtener familiares (JOIN con tabla intermedia)
+        $stmtFamiliares = $this->db->prepare("
+            SELECT f.id, f.nombre, f.apellido, f.dni, f.telefono, af.parentesco, f.fecha_nacimiento as fechaNac
+            FROM familiares f
+            INNER JOIN alumno_familiar af ON af.familiar_id = f.id
+            WHERE af.alumno_id = ?
+        ");
+        $stmtFamiliares->execute([$id]);
+        $familiares = $stmtFamiliares->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Obtener actividades (asumimos tabla alumno_actividad)
+        $stmtActividades = $this->db->prepare("
+            SELECT a.id, a.nombre, a.tipo, a.descripcion, a.cupo, a.turno,
+                   a.fecha_inicio, a.fecha_fin, a.estado
+            FROM actividades a
+            INNER JOIN inscripciones aa ON aa.actividad_id = a.id
+            WHERE aa.alumno_id = ?
+        ");
+        $stmtActividades->execute([$id]);
+        $actividades = $stmtActividades->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Formatear el resultado final
+        $resultado = [
+            'id' => (int)$alumno['id'],
+            'nombre' => $alumno['nombre'],
+            'apellido' => $alumno['apellido'],
+            'dni' => $alumno['dni'],
+            'fechaNac' => $alumno['fecha_nacimiento'],
+            'direccion' => $alumno['direccion'],
+            'barrio' => $alumno['barrio'],
+            'socioEducativo' => (bool)$alumno['socio_educativo'],
+            'escuela' => $alumno['escuela'],
+            'anioEscolar' => $alumno['anio_escolar'],
+            'familiares' => $familiares,
+            'actividades' => $actividades
+        ];
+    
+        return $resultado;
     }
 
     public function create($data) {
