@@ -25,7 +25,7 @@ switch ($action) {
 
     case 'update':
         if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['id'])) {
-            parse_str(file_get_contents("php://input"), $_PUT);
+            $_PUT = json_decode(file_get_contents("php://input"), true);
             $controller->update($_GET['id'], $_PUT);
         }
         break;

@@ -92,24 +92,24 @@ class Alumno {
     }
 
     public function update($id, $data) {
-        $query = "UPDATE alumnos SET nombre = ?, apellido = ?, dni = ?, fecha_nac = ?, direccion = ?, barrio = ?, socio_educativo = ?, escuela = ?, anio_escolar = ?, turno = ?
+        $query = "UPDATE alumnos SET nombre = ?, apellido = ?, dni = ?, fecha_nacimiento = ?, direccion = ?, barrio = ?, socio_educativo = ?, escuela = ?, anio_escolar = ?
                   WHERE id = ?";
         $stmt = $this->db->prepare($query);
 
-        $data['socio_educativo'] = $data['socio_educativo'] === '0' ? false : true;
+        $data['socioEducativo'] = $data['socioEducativo'] === '0' ? false : true;
 
         return $stmt->execute([
             $data['nombre'],
             $data['apellido'],
             $data['dni'],
-            $data['fecha_nac'],
+            $data['fechaNac'],
             $data['direccion'],
             $data['barrio'],
-            $data['socio_educativo'],
+            $data['socioEducativo'],
             $data['escuela'],
-            $data['anio_escolar'],
+            $data['anioEscolar'],
           
-            $id
+            $id 
         ]);
     }
 

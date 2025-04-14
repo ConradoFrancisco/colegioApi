@@ -25,7 +25,7 @@ class AlumnoController {
 
     public function update($id, $data) {
         $success = $this->alumno->update($id, $data);
-        echo json_encode(['success' => $success]);
+        echo json_encode(['message' => 'Alumno editado Correctamente','success' => $success]);
     }
 
     public function delete($id) {
