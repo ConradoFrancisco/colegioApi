@@ -9,6 +9,15 @@ switch ($action) {
             $controller->getAll();
         }
         break;
+        case 'createFamiliar':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $data = json_decode(file_get_contents("php://input"), true);
+                $controller->storeFamilarAlumno($data);
+            }
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                $controller->getAll();
+            }
+            break;    
 
     case 'get':
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {

@@ -1,12 +1,18 @@
 <?php
 
 require_once './models/AlumnosModel.php';
+require_once './models/FamiliarModel.php';
+require_once './models/AlumnoFamiliarModel.php';
 
 class AlumnoController {
     private $alumno;
+    private $familiarModel;
+    private $alumnoFamiliarModel;
 
     public function __construct() {
         $this->alumno = new Alumno();
+        $this->familiarModel = new Familiar();
+        $this->alumnoFamiliarModel = new AlumnoFamiliar();
     }
 
     public function getAll() {
@@ -31,5 +37,20 @@ class AlumnoController {
     public function delete($id) {
         $success = $this->alumno->delete($id);
         echo json_encode(['success' => $success]);
+    }
+
+    public function storeFamilarAlumno($data) {
+        // 1. Crea el familiar (si no existe)
+        $familiarId = $this->familiarModel->create($data);
+
+        // 2. Crea la relación alumno-familiar
+        $response = $this->alumnoFamiliarModel->create($data['alumno_id'], $familiarId, $data['parentesco']);
+
+        if (isset($response['error'])) {
+            echo json_encode($response);
+            return;
+        }
+
+        echo json_encode(['success' => 'Familiar agregado correctamente']);
     }
 }
