@@ -10,10 +10,59 @@ class Alumno {
         $database = new Database();
         $this->db = $database->connect();
     }
-    public function getAll() {
-        $stmt = $this->db->query("SELECT * FROM alumnos");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getAll($params = []) {
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM alumnos WHERE 1=1";
+        $queryParams = [];
+    
+        // Búsqueda por nombre, apellido o dni
+        if (!empty($params['busqueda'])) {
+            $sql .= " AND (nombre LIKE :busqueda OR apellido LIKE :busqueda OR dni LIKE :busqueda)";
+            $queryParams[':busqueda'] = '%' . $params['busqueda'] . '%';
+        }
+    
+        // Filtro por barrio
+        if (!empty($params['barrio'])) {
+            $sql .= " AND barrio = :barrio";
+            $queryParams[':barrio'] = $params['barrio'];
+        }
+    
+        // Orden
+        $sql .= " ORDER BY apellido ASC, nombre ASC";
+    
+        // Limit y offset
+        if (isset($params['limit'])) {
+            $sql .= " LIMIT :limit";
+            $queryParams[':limit'] = (int) $params['limit'];
+        }
+    
+        if (isset($params['offset'])) {
+            $sql .= " OFFSET :offset";
+            $queryParams[':offset'] = (int) $params['offset'];
+        }
+    
+        $stmt = $this->db->prepare($sql);
+    
+        // Bind seguro para evitar problemas con LIMIT/OFFSET que no aceptan bindParam de strings
+        foreach ($queryParams as $key => &$val) {
+            if (in_array($key, [':limit', ':offset'])) {
+                $stmt->bindValue($key, $val, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, $val);
+            }
+        }
+    
+        $stmt->execute();
+        $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Obtener total sin limitar
+        $total = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+    
+        return [
+            'data' => $alumnos,
+            'total' => (int)$total
+        ];
     }
+    
 
     public function getById($id) {
         // Obtener datos del alumno

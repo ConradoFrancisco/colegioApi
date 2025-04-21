@@ -1,14 +1,19 @@
 <?php
-require_once './models/FamiliarModel.php';
-require_once './models/AlumnoFamiliarModel.php';
+require_once './models/ActividadModel.php';
 
-class FamiliarController {
-    private $familiarModel;
-    private $alumnoFamiliarModel;
+
+class ActividadController {
+    private $actividadModel;
+
 
     public function __construct() {
-        $this->familiarModel = new Familiar();
-        $this->alumnoFamiliarModel = new AlumnoFamiliar();
+        $this->actividadModel = new Actividad();
+        
+    }
+    public function getAll() {
+        header('Content-Type: application/json; charset=utf-8');
+        $actividades = $this->actividadModel->getAll();
+        echo json_encode($actividades, JSON_UNESCAPED_UNICODE);
     }
 
     public function create($data) {
@@ -21,7 +26,7 @@ class FamiliarController {
         }
     }
 
-    public function update($id,$data) {
+   /*  public function update($id,$data) {
         try{
             $success = $this->familiarModel->update($id,$data);
             echo json_encode(['message' => 'Familiar actualizado con éxito']);
@@ -54,5 +59,5 @@ class FamiliarController {
     public function getAll() {
         $familiares = $this->familiarModel->getAll();
         echo json_encode($familiares);
-    }
+    } */
 }

@@ -17,7 +17,20 @@ class AlumnoController {
 
     public function getAll() {
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($this->alumno->getAll(),JSON_UNESCAPED_UNICODE);
+    
+        $params = [
+            'busqueda' => $_GET['busqueda'] ?? null,
+            'barrio' => $_GET['barrio'] ?? null,
+            'limit' => isset($_GET['limit']) ? (int)$_GET['limit'] : null,
+            'offset' => isset($_GET['offset']) ? (int)$_GET['offset'] : null
+        ];
+    
+        $result = $this->alumno->getAll($params);
+    
+        echo json_encode([
+            'data' => $result['data'],
+            'total' => $result['total']
+        ], JSON_UNESCAPED_UNICODE);
     }
 
     public function getById($id) {

@@ -16,7 +16,12 @@ switch ($action) {
             $controller->create($data);
         }
         break;
-
+        case 'update':
+            if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['id'])) {
+                $_PUT = json_decode(file_get_contents("php://input"), true);
+                $controller->update($_GET['id'], $_PUT);
+            }
+            break;
     case 'vincular':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);
