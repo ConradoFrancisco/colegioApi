@@ -12,18 +12,23 @@ class ActividadController {
     }
     public function getAll() {
         header('Content-Type: application/json; charset=utf-8');
-        $actividades = $this->actividadModel->getAll();
-        echo json_encode($actividades, JSON_UNESCAPED_UNICODE);
+        $params = [
+            'limit' => isset($_GET['limit']) ? (int)$_GET['limit'] : null,
+            'offset' => isset($_GET['offset']) ? (int)$_GET['offset'] : null
+        ];
+    
+        $result = $this->actividadModel->getAll($params);
+    
+        echo json_encode([
+            'data' => $result['data'],
+            'total' => $result['total']
+        ], JSON_UNESCAPED_UNICODE);
     }
 
+  
     public function create($data) {
-        $familiarId = $this->familiarModel->create($data);
-        if ($familiarId) {
-            echo json_encode(['message' => 'Familiar creado con éxito', 'id' => $familiarId]);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error al crear el familiar']);
-        }
+        $success = $this->actividadModel->create($data);
+        echo json_encode(['message' => 'Actividad creada correctamente', 'success' => $success]);
     }
 
    /*  public function update($id,$data) {

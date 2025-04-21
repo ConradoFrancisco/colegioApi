@@ -9,31 +9,59 @@ class Actividad {
         $this->db = $database->connect();
     }
 
-   public function getAll() {
-        $query = "SELECT * FROM actividades";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function create($alumnoId, $familiarId, $parentesco) {
-        // Verifica si ya existe la relación
-        $query = "SELECT * FROM alumno_familiar WHERE alumno_id = ? AND familiar_id = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$alumnoId, $familiarId]);
-        $existingRelation = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($existingRelation) {
-            // Si ya existe, no crees la relación de nuevo
-            return ['error' => 'La relación ya existe'];
+   public function getAll($params = []) {
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM actividades where 1=1";
+        $queryParams = [];
+        // Limit y offset
+        if (isset($params['limit'])) {
+            $sql .= " LIMIT :limit";
+            $queryParams[':limit'] = (int) $params['limit'];
         }
-
-        // Si no existe, crea la relación
-        $query = "INSERT INTO alumno_familiar (alumno_id, familiar_id, parentesco) 
-                  VALUES (?, ?, ?)";
+    
+        if (isset($params['offset'])) {
+            $sql .= " OFFSET :offset";
+            $queryParams[':offset'] = (int) $params['offset'];
+        }
+    
+        $stmt = $this->db->prepare($sql);
+    
+        // Bind seguro para evitar problemas con LIMIT/OFFSET que no aceptan bindParam de strings
+        foreach ($queryParams as $key => &$val) {
+            if (in_array($key, [':limit', ':offset'])) {
+                $stmt->bindValue($key, $val, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, $val);
+            }
+        }
+    
+        $stmt->execute();
+        $actividades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $total = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+    
+        return [
+            'data' => $actividades,
+            'total' => (int)$total
+        ];
+    }
+    public function create($data) {
+        $query = "INSERT INTO actividades (nombre, tipo, descripcion, cupo, turno, fecha_inicio, fecha_fin, estado)
+                  VALUES (:nombre, :tipo, :descripcion, :cupo, :turno, :fecha_inicio, :fecha_fin, :estado)";
+    
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$alumnoId, $familiarId, $parentesco]);
-
-        return ['success' => 'Relación creada correctamente'];
+        $stmt->bindParam(':nombre', $data['nombre']);
+        $stmt->bindParam(':tipo', $data['tipo']);
+        $stmt->bindParam(':descripcion', $data['descripcion']);
+        $stmt->bindParam(':cupo', $data['cupo']);
+        $stmt->bindParam(':turno', $data['turno']);
+        $stmt->bindParam(':fecha_inicio', $data['fecha_inicio']);
+        $stmt->bindParam(':fecha_fin', $data['fecha_fin']);
+        $stmt->bindParam(':estado', $data['estado']);
+    
+        if ($stmt->execute()) {
+            return $this->db->lastInsertId(); // Devuelve el ID de la actividad creada
+        } else {
+            return false;
+        }
     }
 }
 

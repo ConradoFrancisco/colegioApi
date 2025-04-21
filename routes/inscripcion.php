@@ -1,7 +1,7 @@
 <?php
 
-require_once './controllers/ActividadController.php';
-$controller = new ActividadController();
+require_once './controllers/InscripcionController.php';
+$controller = new InscripcionController();
 
 switch ($action) {
     case 'getAll':

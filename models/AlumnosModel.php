@@ -87,7 +87,7 @@ class Alumno {
         // Obtener actividades (asumimos tabla alumno_actividad)
         $stmtActividades = $this->db->prepare("
             SELECT a.id, a.nombre, a.tipo, a.descripcion, a.cupo, a.turno,
-                   a.fecha_inicio, a.fecha_fin, a.estado
+                   a.fecha_inicio, a.fecha_fin, a.estado,aa.en_lista_espera
             FROM actividades a
             INNER JOIN inscripciones aa ON aa.actividad_id = a.id
             WHERE aa.alumno_id = ?

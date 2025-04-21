@@ -1,0 +1,33 @@
+<?php
+require_once './models/InscripcionModel.php';
+
+
+class InscripcionController {
+    private $inscripcionModel;
+
+
+    public function __construct() {
+        $this->inscripcionModel = new Inscripcion();
+        
+    }
+    /* public function getAll() {
+        header('Content-Type: application/json; charset=utf-8');
+        $params = [
+            'limit' => isset($_GET['limit']) ? (int)$_GET['limit'] : null,
+            'offset' => isset($_GET['offset']) ? (int)$_GET['offset'] : null
+        ];
+    
+        $result = $this->actividadModel->getAll($params);
+    
+        echo json_encode([
+            'data' => $result['data'],
+            'total' => $result['total']
+        ], JSON_UNESCAPED_UNICODE);
+    } */
+
+  
+    public function create($data) {
+        $success = $this->inscripcionModel->create($data);
+        echo json_encode(['message' => 'Inscripcion realizada correctamente', 'success' => $success]);
+    }
+}
