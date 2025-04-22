@@ -15,6 +15,11 @@ switch ($action) {
                 $controller->create($data);
             }
             break;
+            case 'getInscriptos':
+                if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+                    $controller->getAll($_GET['id']);
+                }
+                break;
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Acción no válida']);

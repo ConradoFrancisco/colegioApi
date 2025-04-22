@@ -15,6 +15,18 @@ switch ($action) {
                 $controller->create($data);
             }
             break;
+            case 'update':
+                if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['id'])) {
+                    $_PUT = json_decode(file_get_contents("php://input"), true);
+                    $controller->update($_GET['id'], $_PUT);
+                }
+                break;
+                case 'updateEstado':
+                    if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['id'])) {
+                        $_PUT = json_decode(file_get_contents("php://input"), true);
+                        $controller->updateEstado($_GET['id'], $_PUT);
+                    }
+                    break;
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Acción no válida']);

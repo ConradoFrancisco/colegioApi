@@ -63,5 +63,32 @@ class Actividad {
             return false;
         }
     }
+    public function update($id,$data){
+        $query = "UPDATE actividades SET nombre = ?, tipo = ?, descripcion = ?, cupo = ?, fecha_inicio = ?, fecha_fin = ?, estado = ?
+                  WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+
+        return $stmt->execute([
+            $data['nombre'],
+            $data['tipo'],
+            $data['descripcion'],
+            $data['cupo'],
+            $data['fecha_inicio'],
+            $data['fecha_fin'],
+            $data['estado'],
+            $id 
+        ]);
+    }
+    public function updateEstado($id,$estado){
+        $query = "UPDATE actividades SET estado = ?
+                  WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+
+        return $stmt->execute([
+            $estado,
+            $id 
+        ]);
+    }
+    
 }
 

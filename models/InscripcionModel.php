@@ -24,4 +24,23 @@ class Inscripcion {
             return false;
         }
     }
+
+    public function getInscriptos($id){
+        $query = "SELECT 
+                    i.id,
+                    i.alumno_id,
+                    CONCAT(a.nombre, ' ', a.apellido) AS alumno_nombre,
+                    i.actividad_id,
+                    i.fecha_inscripcion,
+                    i.observaciones,
+                    i.en_lista_espera
+                    FROM inscripciones i
+                    JOIN alumnos a ON a.id = i.alumno_id
+                    WHERE i.actividad_id = :actividad_id";
+                  
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':actividad_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

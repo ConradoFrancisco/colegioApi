@@ -30,6 +30,20 @@ class ActividadController {
         $success = $this->actividadModel->create($data);
         echo json_encode(['message' => 'Actividad creada correctamente', 'success' => $success]);
     }
+    public function update($id, $data) {
+        $success = $this->actividadModel->update($id, $data);
+        echo json_encode(['message' => 'Actividad modificada Correctamente','success' => $success]);
+    }
+
+    public function delete($id) {
+        $success = $this->actividadModel->delete($id);
+        echo json_encode(['success' => $success]);
+    }
+    public function updateEstado($id, $estado) {
+        $success = $this->actividadModel->updateEstado($id, $estado['estado']);
+        $str = $estado['estado'] === 'Activa' ? 'Actividad activada correctamente' : 'Actividad ahora en pausa';
+        echo json_encode(['message' => $str, 'success' => $success,'estado' => $estado]);
+    }
 
    /*  public function update($id,$data) {
         try{

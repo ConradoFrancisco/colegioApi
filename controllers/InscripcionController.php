@@ -30,4 +30,8 @@ class InscripcionController {
         $success = $this->inscripcionModel->create($data);
         echo json_encode(['message' => 'Inscripcion realizada correctamente', 'success' => $success]);
     }
+    public function getAll($id) {
+        $result = $this->inscripcionModel->getInscriptos($id);
+        echo json_encode(['data' => $result], JSON_UNESCAPED_UNICODE);
+    }
 }
