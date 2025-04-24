@@ -34,4 +34,10 @@ class InscripcionController {
         $result = $this->inscripcionModel->getInscriptos($id);
         echo json_encode(['data' => $result], JSON_UNESCAPED_UNICODE);
     }
+    public function toggleState($id,$data){
+        $str = $data['estado'] === 1 ? 'Inscripcion dada de alta' : 'Inscripcion dada de baja';
+        header('Content-Type: application/json; charset=utf-8');
+        $success = $this->inscripcionModel->toggleState($id, $data['estado']);
+        echo json_encode(['message' => $str, 'success' => $success]);
+    }
 }

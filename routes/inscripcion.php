@@ -20,6 +20,12 @@ switch ($action) {
                     $controller->getAll($_GET['id']);
                 }
                 break;
+                case 'toggleState':
+                    if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['id'])) {
+                        $_PUT = json_decode(file_get_contents("php://input"), true);
+                        $controller->toggleState($_GET['id'], $_PUT);
+                    }
+                    break;
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Acción no válida']);

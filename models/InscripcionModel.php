@@ -43,4 +43,17 @@ class Inscripcion {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function toggleState($id,$state){
+        $query = "UPDATE inscripciones SET en_lista_espera = :state WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':state', $state, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
