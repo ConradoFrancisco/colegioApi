@@ -12,6 +12,9 @@ class Actividad {
    public function getAll($params = []) {
         $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM actividades where 1=1";
         $queryParams = [];
+        if(isset($params['estado'])) {
+            $sql .= " AND estado = 'Activa'";
+        }
         // Limit y offset
         if (isset($params['limit'])) {
             $sql .= " LIMIT :limit";
@@ -22,6 +25,7 @@ class Actividad {
             $sql .= " OFFSET :offset";
             $queryParams[':offset'] = (int) $params['offset'];
         }
+
     
         $stmt = $this->db->prepare($sql);
     

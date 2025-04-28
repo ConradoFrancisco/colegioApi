@@ -14,7 +14,8 @@ class ActividadController {
         header('Content-Type: application/json; charset=utf-8');
         $params = [
             'limit' => isset($_GET['limit']) ? (int)$_GET['limit'] : null,
-            'offset' => isset($_GET['offset']) ? (int)$_GET['offset'] : null
+            'offset' => isset($_GET['offset']) ? (int)$_GET['offset'] : null,
+            'estado' => isset($_GET['estado']) ? true : null
         ];
     
         $result = $this->actividadModel->getAll($params);
