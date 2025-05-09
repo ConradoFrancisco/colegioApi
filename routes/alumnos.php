@@ -18,7 +18,15 @@ switch ($action) {
                 $controller->getAll();
             }
             break;    
-
+            case 'updatePrioridad':
+                if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+                    $_PUT = json_decode(file_get_contents("php://input"), true);
+                    $controller->updatePrioridad($_GET['id'],$_PUT);
+                }
+                if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    $controller->getAll();
+                }
+                break; 
     case 'get':
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
             $controller->getById($_GET['id']);

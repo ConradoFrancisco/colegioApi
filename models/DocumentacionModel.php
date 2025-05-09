@@ -1,5 +1,5 @@
 <?php
-
+require_once './config/Database.php';
 class DocumentacionModel {
     private $db;
 

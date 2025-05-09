@@ -66,4 +66,10 @@ class AlumnoController {
 
         echo json_encode(['success' => 'Familiar agregado correctamente']);
     }
+
+    public function updatePrioridad($id, $data) {
+        echo json_encode($data);
+        $success = $this->alumno->updatePrioridad($id, $data);
+        echo json_encode(['message' => 'Respuestas guardadas satisfactoriamente','success' => $success]);
+    }
 }

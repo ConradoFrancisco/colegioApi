@@ -1,5 +1,6 @@
 <?php
 
+require_once './models/DocumentacionModel.php';
 class DocumentacionController {
     private $documentacionModel;
 
@@ -20,7 +21,7 @@ class DocumentacionController {
             if (move_uploaded_file($archivo['tmp_name'], $ruta)) {
                 $data = [
                     'alumno_id' => $alumno_id,
-                    'tipo' => $tipo_documento,
+                    'tipo' => $tipo,
                     'url' => $ruta,
                 ];
                 $success = $this->documentacionModel->subirDocumentacion($data);

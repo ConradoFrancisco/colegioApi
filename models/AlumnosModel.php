@@ -95,6 +95,15 @@ class Alumno {
         $stmtActividades->execute([$id]);
         $actividades = $stmtActividades->fetchAll(PDO::FETCH_ASSOC);
     
+        $stmtDocumentacion = $this->db->prepare("
+            SELECT d.id, d.tipo, d.url
+            FROM documentacion_adjunta d
+            WHERE d.alumno_id = ?
+        ");
+        $stmtDocumentacion->execute([$id]);
+        $documentacion = $stmtDocumentacion->fetchAll(PDO::FETCH_ASSOC);
+
+
         // Formatear el resultado final
         $resultado = [
             'id' => (int)$alumno['id'],
@@ -107,8 +116,14 @@ class Alumno {
             'socioEducativo' => (bool)$alumno['socio_educativo'],
             'escuela' => $alumno['escuela'],
             'anioEscolar' => $alumno['anio_escolar'],
+            'frecuenciaEscuela' => $alumno['frecuenciaEscuela'],
+            'canastaBasica' => $alumno['canastaBasica'],
+            'repitencia' => $alumno['repitencia'],
+            'ingresosHogar' => $alumno['ingresosHogar'],
+            'prioridad' => $alumno['prioridad'],
             'familiares' => $familiares,
-            'actividades' => $actividades
+            'actividades' => $actividades,
+            'documentacion' => $documentacion,
         ];
     
         return $resultado;
@@ -165,5 +180,17 @@ class Alumno {
     public function delete($id) {
         $stmt = $this->db->prepare("DELETE FROM alumnos WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+
+    public function updatePrioridad($id, $data) {
+        
+        $frecuenciaEscuela = $data['frecuenciaEscuela'];
+        $canastaBasica = $data['canastaBasica'];
+        $repitencia = $data['repitencia'];
+        $ingresosHogar = $data['ingresosHogar'];
+        $total = $frecuenciaEscuela + $canastaBasica + $repitencia + $ingresosHogar + 1;
+        $query = "UPDATE alumnos SET frecuenciaEscuela = ?,canastaBasica = ?,repitencia = ?,ingresosHogar = ?,prioridad = ? WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([$frecuenciaEscuela,$canastaBasica,$repitencia,$ingresosHogar,$total, $id]);
     }
 }
