@@ -11,7 +11,7 @@ class Alumno {
         $this->db = $database->connect();
     }
     public function getAll($params = []) {
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM alumnos WHERE 1=1";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM alumnos WHERE true";
         $queryParams = [];
     
         // Búsqueda por nombre, apellido o dni
@@ -26,20 +26,27 @@ class Alumno {
             $queryParams[':barrio'] = $params['barrio'];
         }
     
-        // Orden
-        $sql .= " ORDER BY apellido ASC, nombre ASC";
-    
+       /*  $sql .= " ORDER BY 'apellido' DESC"; */
         // Limit y offset
+        if (isset($params['orden']) && isset($params['orderDirection'])) {
+    // Validar que el campo y la dirección sean válidos
+    $camposPermitidos = ['apellido', 'nombre', 'fecha_nacimiento', 'dni', 'barrio', 'direccion', 'escuela', 'prioridad'];
+    $direccionesPermitidas = ['ASC', 'DESC'];
+
+    if (in_array($params['orden'], $camposPermitidos) && in_array(strtoupper($params['orderDirection']), $direccionesPermitidas)) {
+        $sql .= " ORDER BY {$params['orden']} {$params['orderDirection']}";
+    }
+}
         if (isset($params['limit'])) {
             $sql .= " LIMIT :limit";
             $queryParams[':limit'] = (int) $params['limit'];
         }
-    
+        
         if (isset($params['offset'])) {
             $sql .= " OFFSET :offset";
             $queryParams[':offset'] = (int) $params['offset'];
         }
-    
+      
         $stmt = $this->db->prepare($sql);
     
         // Bind seguro para evitar problemas con LIMIT/OFFSET que no aceptan bindParam de strings
@@ -59,7 +66,9 @@ class Alumno {
     
         return [
             'data' => $alumnos,
-            'total' => (int)$total
+            'total' => (int)$total,
+            'query' => $sql,
+           
         ];
     }
     

@@ -20,6 +20,8 @@ class AlumnoController {
     
         $params = [
             'busqueda' => $_GET['busqueda'] ?? null,
+            'orden' => $_GET['orden'] ?? null,
+            'orderDirection' => $_GET['orderDirection'] ?? null,
             'barrio' => $_GET['barrio'] ?? null,
             'limit' => isset($_GET['limit']) ? (int)$_GET['limit'] : null,
             'offset' => isset($_GET['offset']) ? (int)$_GET['offset'] : null
@@ -29,7 +31,9 @@ class AlumnoController {
     
         echo json_encode([
             'data' => $result['data'],
-            'total' => $result['total']
+            'total' => $result['total'],
+            'sql' => $result['query'],
+            'params' => $params
         ], JSON_UNESCAPED_UNICODE);
     }
 
