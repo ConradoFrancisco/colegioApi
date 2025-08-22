@@ -11,12 +11,12 @@ class Alumno {
         $this->db = $database->connect();
     }
     public function getAll($params = []) {
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM alumnos WHERE true";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS a.id,a.nombre,a.apellido,a.fecha_nacimiento,a.dni,a.barrio,a.direccion,a.escuela,a.prioridad,ac.nombre as actividad, ac.id FROM alumnos a left join inscripciones i on a.id = i.alumno_id left join actividades ac on i.actividad_id = ac.id where true";
         $queryParams = [];
     
         // Búsqueda por nombre, apellido o dni
         if (!empty($params['busqueda'])) {
-            $sql .= " AND (nombre LIKE :busqueda OR apellido LIKE :busqueda OR dni LIKE :busqueda)";
+            $sql .= " AND (a.nombre LIKE :busqueda OR a.apellido LIKE :busqueda OR a.dni LIKE :busqueda)";
             $queryParams[':busqueda'] = '%' . $params['busqueda'] . '%';
         }
     
@@ -26,6 +26,10 @@ class Alumno {
             $queryParams[':barrio'] = $params['barrio'];
         }
     
+        if (!empty($params['actividad'])) {
+    $sql .= " AND ac.id = :actividad";
+    $queryParams[':actividad'] = (int)$params['actividad'];
+}
        /*  $sql .= " ORDER BY 'apellido' DESC"; */
         // Limit y offset
         if (isset($params['orden']) && isset($params['orderDirection'])) {
@@ -68,6 +72,7 @@ class Alumno {
             'data' => $alumnos,
             'total' => (int)$total,
             'query' => $sql,
+            'params' => $params
            
         ];
     }
