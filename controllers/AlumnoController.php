@@ -20,6 +20,7 @@ class AlumnoController {
     
         $params = [
             'busqueda' => $_GET['busqueda'] ?? null,
+            'actividad' => $_GET['actividad'] ?? null,
             'orden' => $_GET['orden'] ?? null,
             'orderDirection' => $_GET['orderDirection'] ?? null,
             'barrio' => $_GET['barrio'] ?? null,
