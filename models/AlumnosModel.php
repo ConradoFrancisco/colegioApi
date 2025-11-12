@@ -143,34 +143,65 @@ class Alumno {
         return $resultado;
     }
 
-    public function create($data) {
-        try{
-            $query = "INSERT INTO alumnos (nombre, apellido, dni, fecha_nacimiento, direccion, barrio, socio_educativo, escuela, anio_escolar)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->db->prepare($query);
-            $data['socio_educativo'] = $data['socio_educativo'] === '0' ? false : true;
-            $stmt->execute([
-                $data['nombre'],
-                $data['apellido'],
-                $data['dni'],
-                $data['fecha_nacimiento'],
-                $data['direccion'],
-                $data['barrio'],
-                $data['socio_educativo'],
-                $data['escuela'],
-                $data['anio_escolar'],
-            ]);
-            return ['success' => true,'message' => 'Alumno creado correctamente'];
-        } catch (Exception $e) {
-            echo json_encode(['error' => 'Error al crear el alumno: ' . $e->getMessage()]);
-            return false;
-        }
+   public function create($data) {
+    try {
+        // Query con todos los campos
+        $query = "INSERT INTO alumnos (
+            nombre, 
+            apellido, 
+            dni, 
+            fecha_nacimiento, 
+            direccion, 
+            barrio, 
+            socio_educativo, 
+            escuela, 
+            anio_escolar,
+            telefono,
+            turno,
+            ingresosHogar,
+            canastaBasica,
+            repitencia,
+            frecuenciaEscuela
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-       
+        $stmt = $this->db->prepare($query);
+
+        // Normalización de valores
+        $data['socio_educativo'] = isset($data['socio_educativo']) && $data['socio_educativo'] ? 1 : 0;
+        $data['ingresosHogar'] = $data['ingresosHogar'] ?? null;
+        $data['canastaBasica'] = $data['canastaBasica'] ?? null;
+        $data['repitencia'] = $data['repitencia'] ?? null;
+        $data['frecuenciaEscuela'] = $data['frecuenciaEscuela'] ?? null;
+
+        // Ejecución
+        $stmt->execute([
+            $data['nombre'],
+            $data['apellido'],
+            $data['dni'],
+            $data['fecha_nacimiento'],
+            $data['direccion'],
+            $data['barrio'],
+            $data['socio_educativo'],
+            $data['escuela'],
+            $data['anio_escolar'],
+            $data['telefono'],
+            $data['turno'],
+            $data['ingresosHogar'],
+            $data['canastaBasica'],
+            $data['repitencia'],
+            $data['frecuenciaEscuela']
+        ]);
+
+        return ['success' => true, 'message' => 'Alumno creado correctamente'];
+
+    } catch (Exception $e) {
+        echo json_encode(['error' => 'Error al crear el alumno: ' . $e->getMessage()]);
+        return false;
     }
+}
 
     public function update($id, $data) {
-        $query = "UPDATE alumnos SET nombre = ?, apellido = ?, dni = ?, fecha_nacimiento = ?, direccion = ?, barrio = ?, socio_educativo = ?, escuela = ?, anio_escolar = ?
+        $query = "UPDATE alumnos SET nombre = ?, apellido = ?, dni = ?, fecha_nacimiento = ?, direccion = ?, barrio = ?, socio_educativo = ?, escuela = ?, anio_escolar = ?, telefono = ?, turno = ?
                   WHERE id = ?";
         $stmt = $this->db->prepare($query);
 
@@ -186,7 +217,8 @@ class Alumno {
             $data['socioEducativo'],
             $data['escuela'],
             $data['anioEscolar'],
-          
+            $data['telefono'],
+            $data['turno'],
             $id 
         ]);
     }
@@ -203,7 +235,7 @@ class Alumno {
         $repitencia = $data['repitencia'];
         $ingresosHogar = $data['ingresosHogar'];
         $total = $frecuenciaEscuela + $canastaBasica + $repitencia + $ingresosHogar + 1;
-        $query = "UPDATE alumnos SET frecuenciaEscuela = ?,canastaBasica = ?,repitencia = ?,ingresosHogar = ?,prioridad = ? WHERE id = ?";
+        $query = "UPDATE alumnos SET frecuenciaEscuela = ?, canastaBasica = ?, repitencia = ?, ingresosHogar = ?, prioridad = ? WHERE id = ?";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$frecuenciaEscuela,$canastaBasica,$repitencia,$ingresosHogar,$total, $id]);
     }
