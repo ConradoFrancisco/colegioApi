@@ -1,12 +1,12 @@
 <?php
 class Database {
     private $host = "localhost";
-   /*  private $db_name = "c2830044_colegio";
+    private $db_name = "c2830044_colegio";
     private $username = "c2830044_colegio";
-    private $password = "09tuzoWOvi"; */
-    private $db_name = "colegioDb";
+    private $password = "09tuzoWOvi";
+   /*  private $db_name = "colegioDb";
     private $username = "root";
-    private $password = "";
+    private $password = ""; */
     public $conn;
 
     public function connect() {

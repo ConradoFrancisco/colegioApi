@@ -11,7 +11,7 @@ class Alumno {
         $this->db = $database->connect();
     }
     public function getAll($params = []) {
-        $sql = "SELECT SQL_CALC_FOUND_ROWS a.id,a.nombre,a.apellido,a.fecha_nacimiento,a.dni,a.barrio,a.direccion,a.escuela,a.prioridad,ac.nombre as actividad, ac.id FROM alumnos a left join inscripciones i on a.id = i.alumno_id left join actividades ac on i.actividad_id = ac.id where true";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS a.id,a.nombre,a.apellido,a.fecha_nacimiento,a.dni,a.barrio,a.direccion,a.escuela,a.prioridad,ac.nombre as actividad, ac.id as actividadId FROM alumnos a left join inscripciones i on a.id = i.alumno_id left join actividades ac on i.actividad_id = ac.id where true";
         $queryParams = [];
     
         // Búsqueda por nombre, apellido o dni
