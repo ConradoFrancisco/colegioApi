@@ -161,8 +161,9 @@ class Alumno {
             ingresosHogar,
             canastaBasica,
             repitencia,
-            frecuenciaEscuela
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            frecuenciaEscuela,
+            prioridad
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->db->prepare($query);
 
@@ -172,7 +173,7 @@ class Alumno {
         $data['canastaBasica'] = $data['canastaBasica'] ?? null;
         $data['repitencia'] = $data['repitencia'] ?? null;
         $data['frecuenciaEscuela'] = $data['frecuenciaEscuela'] ?? null;
-
+        $total = $data['frecuenciaEscuela'] + $data['canastaBasica'] + $data['repitencia'] + $data['ingresosHogar'] + 1;
         // Ejecución
         $stmt->execute([
             $data['nombre'],
@@ -189,7 +190,8 @@ class Alumno {
             $data['ingresosHogar'],
             $data['canastaBasica'],
             $data['repitencia'],
-            $data['frecuenciaEscuela']
+            $data['frecuenciaEscuela'],
+            $total
         ]);
 
         return ['success' => true, 'message' => 'Alumno creado correctamente'];
